@@ -10,7 +10,10 @@ import Mathlib.Algebra.Order.Ring.Int
 import Mathlib.Tactic.Linarith.Lemmas
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith.Frontend
-import Mathlib
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Algebra.Group.Nat.Even
+import Mathlib.Algebra.Ring.Prod
+import Mathlib.Data.Fintype.Card
 -- import Mathlib.Algebra.BigOperators.Group.Finset
 
 
