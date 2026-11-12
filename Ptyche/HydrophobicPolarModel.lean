@@ -265,21 +265,9 @@ theorem pts_tot'_eq_points_tot {α:Type} {β : Type} [Fintype β] (go : β → �
   rw [← this] at hDU
   let Q := Finset.sum_congr rfl (fun x : Fin l ↦ fun _ : x ∈ Finset.univ ↦ slicer_card P x)
   rw [← Q,← hDU]
-  congr;apply Finset.ext;simp;
-
-  intro a b
-  constructor
-  · intro h
-    use b
-    show (a, b) ∈ (fun k ↦ Finset.filter (fun ik ↦ ik.2 = k ∧ P ik.1 k = true) Finset.univ) b
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-    tauto
-  · intro h
-    obtain ⟨k,hk⟩ := h
-    have : (a,b) ∈ (fun k ↦ Finset.filter (fun ik ↦ ik.2 = k ∧ P ik.1 k = true) Finset.univ) k := hk
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at this
-    have : b = k ∧ (fun ik1 k ↦ pt_loc go fold ik1 k ph) a k = true := this
-    aesop
+  congr 1
+  ext ⟨a, b⟩
+  simp [t, P]
 
 /-- . -/
 theorem pts_bound_of_embeds' {α:Type} [DecidableEq α] {b₀ b₁ : ℕ}
@@ -609,10 +597,8 @@ theorem two_heads {α : Type} {k :ℕ} (v: List.Vector α k.succ) (w : List α) 
       exact v2
     have : v = head ::ᵥ ⟨tail, this⟩ := by
       apply List.Vector.eq
-      simp only [List.Vector.toList_cons, List.Vector.toList_mk]
-      rw [h]
-      rfl
-    rw [this]; simp
+      exact h.symm
+    rw [this]; rfl
 
 /-- . -/
 theorem path_cons {α:Type} [Zero α] {b₀ : ℕ}

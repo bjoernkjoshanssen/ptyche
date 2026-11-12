@@ -49,7 +49,7 @@ def Gap (b L k : ℕ) : Type := List.Vector (Fin b) (L - k)
 def Gap_cons {n L b:ℕ} (a:Fin b) (w : Gap b L.succ n.succ)
     (h: ¬ n ≥ L.succ) : Gap b L.succ n :=
   ⟨a :: w.1, by
-      rw [List.length_cons, List.Vector.length_val,Nat.succ_sub_succ_eq_sub]
+      rw [List.length_cons, w.2, Nat.succ_sub_succ_eq_sub]
       exact .symm <| Nat.succ_sub <| Nat.not_lt.mp h⟩
 
 /-- The empty "gap", with possible length overflow. -/
@@ -299,7 +299,8 @@ theorem backtracking_verification {k b L:ℕ} (bound : k ≤ L.succ) (M:MonoPred
         fun x y : {v : List.Vector (Fin b) L.succ // (M.P v.1 ∧ M.Q v.1) ∧ w.1 <:+ v.1}
         ↦ SetCoe.ext (prefix_of_same w ⟨x.1,x.2.2⟩ ⟨y.1,y.2.2⟩)
       )
-    unfold num_by_backtracking; split_ifs with hs
+    change _ = if M.P w.1 ∧ M.Q w.1 then 1 else 0
+    split_ifs with hs
     · have := uniqueOfSubsingleton
         (⟨w,⟨hs, List.suffix_rfl⟩⟩ : {v : List.Vector (Fin b) L.succ // (M.P v.1 ∧ M.Q v.1)
           ∧ w.1 <:+ v.1})
@@ -311,7 +312,7 @@ theorem backtracking_verification {k b L:ℕ} (bound : k ≤ L.succ) (M:MonoPred
   | Nat.succ n => by
     have notg : ¬ (n ≥ L.succ) := Nat.not_le_of_lt bound
     rw [
-      branch_out _ notg,
+      branch_out M notg w,
       ← funext (fun i : Fin b ↦
         backtracking_verification (Nat.le_of_lt bound) _ (Gap_cons i w notg))]
     rw [Fintype_card_subtype_of_disjoint _ (fun _ _ hij ↦ disjoint_branch'' w notg hij)];
